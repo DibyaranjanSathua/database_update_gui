@@ -2,6 +2,8 @@
 File:           gui.py
 Author:         Dibyaranjan Sathua
 Created on:     02/12/21, 6:50 pm
+
+Search for "Update on client side" and do the necessary changes
 """
 import csv
 from pathlib import Path
@@ -43,11 +45,13 @@ class EmailUpdateGUI:
 
     def init_db_data(self):
         """ Initialize with database data """
+        # Update on client side: CHANGE TABLE NAME
         query = "SELECT * FROM div_contact_list_audit;"
         # self.row_data = self.dbhandler.create_pandas_table(query)
         # for index, row in self.row_data.iterrows():
         self.row_data = self.dbhandler.fetch_all(query)
         for row in self.row_data:
+            # Update on client side: CHANGE COLUMN NAME FOR DIVISION, DEPARTMENT AND CATEGORY
             division = row["division_nm"]
             department = row["dept_nm"]
             catgegory = row["category_nm"]
@@ -202,21 +206,23 @@ class EmailUpdateGUI:
                 "All fields sm_name, sm_email, asm_name or asm_email can not be empty"
             )
         input_emails = []
+        # Update on client side: CHANGE TABLE NAME
         query = "UPDATE div_contact_list_audit SET"
         if sm_name:
-            query += f" sm_name = %s,"
+            query += f" sm_name = %s,"      # Update on client side: CHANGE COLUMN NAME
             input_emails.append(sm_name)
         if sm_email:
-            query += f" sm_email = %s,"
+            query += f" sm_email = %s,"     # Update on client side: CHANGE COLUMN NAME
             input_emails.append(sm_email)
         if asm_name:
-            query += f" asm_name = %s,"
+            query += f" asm_name = %s,"     # Update on client side: CHANGE COLUMN NAME
             input_emails.append(asm_name)
         if asm_email:
-            query += f" asm_email = %s,"
+            query += f" asm_email = %s,"    # Update on client side: CHANGE COLUMN NAME
             input_emails.append(asm_email)
         # Remove the last comma
         query = query.strip(",")
+        # Update on client side: CHANGE COLUMN NAME
         query += " WHERE division_nm = %s AND dept_nm = %s AND category_nm = %s;"
         records = [
             input_emails + [self.selected_division, self.selected_department, x]
@@ -235,32 +241,35 @@ class EmailUpdateGUI:
                 f"CSV file {csv_file_path} does not exist"
             )
         records = []
+        # Update on client side: CHANGE TABLE NAME
         query = "UPDATE div_contact_list_audit SET"
         with open(csv_file_path, mode="r") as fp:
             reader = csv.DictReader(fp)
             for row in reader:
                 data = []
-                if "SM_NAME" in row:
+                if "SM_NAME" in row:                # Update on client side: CHANGE CSV HEADER NAME
                     data.append(row["SM_NAME"])
                 if "SM_EMAIL" in row:
-                    data.append(row["SM_EMAIL"])
+                    data.append(row["SM_EMAIL"])    # Update on client side: CHANGE CSV HEADER NAME
                 if "ASM_NAME" in row:
-                    data.append(row["ASM_NAME"])
+                    data.append(row["ASM_NAME"])    # Update on client side: CHANGE CSV HEADER NAME
                 if "ASM_EMAIL" in row:
-                    data.append(row["ASM_EMAIL"])
+                    data.append(row["ASM_EMAIL"])   # Update on client side: CHANGE CSV HEADER NAME
+                # Update on client side: CHANGE CSV HEADER NAME
                 data += [row["DIVISION_NM"], row["DEPT_NM"], row["CATEGORY_NM"]]
                 records.append(data)
 
-        if "SM_NAME" in row:
-            query += f" sm_name = %s,"
-        if "SM_EMAIL" in row:
-            query += f" sm_email = %s,"
-        if "ASM_NAME" in row:
-            query += f" asm_name = %s,"
-        if "ASM_EMAIL" in row:
-            query += f" asm_email = %s,"
+        if "SM_NAME" in row:                # Update on client side: CHANGE CSV HEADER NAME
+            query += f" sm_name = %s,"      # Update on client side: CHANGE COLUMN NAME
+        if "SM_EMAIL" in row:               # Update on client side: CHANGE CSV HEADER NAME
+            query += f" sm_email = %s,"     # Update on client side: CHANGE COLUMN NAME
+        if "ASM_NAME" in row:               # Update on client side: CHANGE CSV HEADER NAME
+            query += f" asm_name = %s,"     # Update on client side: CHANGE COLUMN NAME
+        if "ASM_EMAIL" in row:              # Update on client side: CHANGE CSV HEADER NAME
+            query += f" asm_email = %s,"    # Update on client side: CHANGE COLUMN NAME
         # Remove the last comma
         query = query.strip(",")
+        # Update on client side: CHANGE COLUMN NAME
         query += " WHERE division_nm = %s AND dept_nm = %s AND category_nm = %s;"
         print(query)
         # print(records)
