@@ -1,0 +1,14 @@
+{
+  "DB_Config": {
+    "host": "localhost",
+    "db": "department_db",
+    "port": 5432,
+    "username": "dibyaranjan",
+    "password": "sathua08",
+    "account": "your-account-info",
+    "warehouse": "your-warehouse-info",
+    "schema": "your-database-schema",
+    "protocol": "https"
+  },
+  "DB_Use": "postgres"
+}
