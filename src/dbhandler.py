@@ -8,7 +8,6 @@ from pathlib import Path
 import psycopg2
 import psycopg2.extras
 import snowflake.connector
-from snowflake.connector.pandas_tools import write_pandas
 import pandas as pd
 
 
