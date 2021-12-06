@@ -42,6 +42,7 @@ class EmailUpdateGUI:
         self.selected_division = ""
         self.selected_department = ""
         self.selected_categories = []
+        self.category_id_name_to_id = dict()
 
     def init_db_data(self):
         """ Initialize with database data """
@@ -54,7 +55,9 @@ class EmailUpdateGUI:
             # Update on client side: CHANGE COLUMN NAME FOR DIVISION, DEPARTMENT AND CATEGORY
             division = row["division_nm"]
             department = row["dept_nm"]
-            catgegory = row["category_nm"]
+            category = row["category_nm"]
+            category_id = row["category_id"]
+            cat_id_name = f"{category_id} {category}"
             if division not in self.db_divisions:
                 self.db_divisions.append(division)
             if division not in self.db_departments:
@@ -65,8 +68,9 @@ class EmailUpdateGUI:
                 self.db_departments[division].append(department)
             if department not in self.db_categories[division]:
                 self.db_categories[division][department] = []
-            if catgegory not in self.db_categories[division][department]:
-                self.db_categories[division][department].append(catgegory)
+            if cat_id_name not in self.db_categories[division][department]:
+                self.db_categories[division][department].append(cat_id_name)
+                self.category_id_name_to_id[cat_id_name] = category_id
 
     def load_gui(self):
         """ Load the main GUI """
@@ -195,7 +199,11 @@ class EmailUpdateGUI:
         """ Update email from gui input """
         print(self.check_value.get())
         selected_indices = self.category_name.curselection()
-        self.selected_categories = [self.category_name.get(x) for x in selected_indices]
+        # Get the category id for the selected categories
+        self.selected_categories = [
+            self.category_id_name_to_id[self.category_name.get(x)]
+            for x in selected_indices
+        ]
         sm_name = self.sm_name.get()
         sm_email = self.sm_email.get()
         asm_name = self.asm_name.get()
@@ -223,7 +231,7 @@ class EmailUpdateGUI:
         # Remove the last comma
         query = query.strip(",")
         # Update on client side: CHANGE COLUMN NAME
-        query += " WHERE division_nm = %s AND dept_nm = %s AND category_nm = %s;"
+        query += " WHERE division_nm = %s AND dept_nm = %s AND category_id = %s;"
         records = [
             input_emails + [self.selected_division, self.selected_department, x]
             for x in self.selected_categories
@@ -256,7 +264,7 @@ class EmailUpdateGUI:
                 if "ASM_EMAIL" in row:
                     data.append(row["ASM_EMAIL"])   # Update on client side: CHANGE CSV HEADER NAME
                 # Update on client side: CHANGE CSV HEADER NAME
-                data += [row["DIVISION_NM"], row["DEPT_NM"], row["CATEGORY_NM"]]
+                data += [row["DIVISION_NM"], row["DEPT_NM"], row["CATEGORY_ID"]]
                 records.append(data)
 
         if "SM_NAME" in row:                # Update on client side: CHANGE CSV HEADER NAME
@@ -270,7 +278,7 @@ class EmailUpdateGUI:
         # Remove the last comma
         query = query.strip(",")
         # Update on client side: CHANGE COLUMN NAME
-        query += " WHERE division_nm = %s AND dept_nm = %s AND category_nm = %s;"
+        query += " WHERE division_nm = %s AND dept_nm = %s AND category_id = %s;"
         print(query)
         # print(records)
         return query, records
